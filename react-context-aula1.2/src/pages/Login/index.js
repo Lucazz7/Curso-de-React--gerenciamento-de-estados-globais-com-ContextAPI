@@ -6,53 +6,74 @@ import {
 } from './styles';
 import {
   Input,
-  InputLabel,
-  InputAdornment
+  InputLabel
 } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
-import { UsuarioContext } from 'common/context/Usuario';
-import { useContext } from 'react';
+import { useState } from 'react';
+import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { auth } from 'Service/firebaseConfig';
 
 function Login() {
   const history = useHistory();
-  const { nome, setNome, saldo, setSaldo} = useContext(UsuarioContext);
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+
+  const login = async () => {
+    try {
+      const user = await signInWithEmailAndPassword(
+        auth,
+        loginEmail,
+        loginPassword
+      );
+      alert(`Bem vindo ${user.user.email}`);
+      history.push("/feira");
+      console.log(user);
+    } catch (error) {
+      alert("login ou senha incorreto")
+      console.log(error.message);
+    }
+  };
+
+  const logout = async () => {
+    await signOut(auth);
+  };
+
+ 
+
   return (
     <Container>
       <Titulo>
-        Insira o seu nome
+        Login
       </Titulo>
       <InputContainer>
         <InputLabel>
-          Nome
+          Email
         </InputLabel>
         <Input
-          value={nome}
-          onChange={e => setNome(e.target.value)}
+          placeholder="Email..."
+          onChange={(event) => {
+            setLoginEmail(event.target.value);
+          }}
           type="text"
         />
       </InputContainer>
       <InputContainer>
         <InputLabel>
-          Saldo
+          Senha
         </InputLabel>
         <Input
-          value={saldo}
-          type="number"
-          onChange={e => setSaldo(e.target.value)}
-          startAdornment={
-            <InputAdornment position="start">
-              R$
-            </InputAdornment>
-          }
+          placeholder="Password..."
+          onChange={(event) => {
+            setLoginPassword(event.target.value);
+          }}
         />
       </InputContainer>
       <Button
-        variant="contained"
         color="primary"
-        disabled={nome.length < 4 }
-        onClick={() => history.push('/feira')}
+        onClick={login}
+        disabled={loginEmail.length < 4 || loginPassword.length < 8}
       >
-        Avançar
+        Entrar
       </Button>
     </Container>
   )
