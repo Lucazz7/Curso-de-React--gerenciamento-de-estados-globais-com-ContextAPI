@@ -25,18 +25,15 @@ function Login() {
         loginEmail,
         loginPassword
       );
-      alert(`Bem vindo ${user.user.email}`);
       history.push("/feira");
-      console.log(user);
+      console.log(user._tokenResponse.idToken);
     } catch (error) {
       alert("login ou senha incorreto")
       console.log(error.message);
     }
   };
 
-  const logout = async () => {
-    await signOut(auth);
-  };
+
 
  
 

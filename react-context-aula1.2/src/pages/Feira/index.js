@@ -8,10 +8,19 @@ import Produto from 'components/Produto';
 import NavBar from './NavBar';
 import { UsuarioContext } from 'common/context/Usuario';
 import { useContext } from 'react';
+import { Button } from '@material-ui/core';
+import { signOut } from 'firebase/auth';
+import { auth } from 'Service/firebaseConfig';
+import { useHistory } from 'react-router-dom';
 
 
 function Feira() {
   const {nome, saldo} = useContext(UsuarioContext);
+  const history = useHistory();
+  const logout = async () => {
+    await signOut(auth);
+    history.push("/");
+  };
   return (
     <Container>
       <NavBar />
@@ -33,7 +42,13 @@ function Feira() {
           />
         ))}
       </Lista>
+      <Button
+        onClick={logout}
+      >
+      Sair
+      </Button>
     </Container>
+
   )
 }
 
